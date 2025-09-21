@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Puja Coupon Calculator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="main-header">
+            <h1>Puja Coupon Calculator</h1>
+            <button id="clear-all-btn" class="clear-btn">Clear All</button>
+        </div>
+        <div id="calculator-container">
+            <!-- Header -->
+            <div class="grid-row header">
+                <div>Day</div>
+                <div>Meal</div>
+                <div>Type</div>
+                <div>Count</div>
+                <div>Sub Price</div>
+                <div>Non-Sub Price</div>
+                <div>Price</div>
+            </div>
+        </div>
+        <div class="totals">
+            <div class="totals-summary">
+                <div>Total Coupons: <span id="total-coupons">0</span></div>
+                <div>Total Price: &#8377;<span id="total-price">0.00</span></div>
+            </div>
+            <div id="price-breakdown"></div>
+        </div>
+        <footer class="footer">
+            Made with <span class="heart">&hearts;</span> by <a href="https://github.com/itsjustasemicolon" target="_blank">Soham</a>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
