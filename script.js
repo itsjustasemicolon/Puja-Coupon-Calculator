@@ -34,17 +34,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const row = document.createElement('div');
         row.classList.add('grid-row');
         row.innerHTML = `
-            <div>${item.day}</div>
-            <div>${item.meal}</div>
-            <div>${item.type === 'VG' ? 'Veg' : item.type === 'NV' ? 'Non-Veg' : ''}</div>
-            <div class="input-stepper">
+            <div data-label="Day">${item.day}</div>
+            <div data-label="Meal">${item.meal}</div>
+            <div data-label="Type">${item.type === 'VG' ? 'Veg' : item.type === 'NV' ? 'Non-Veg' : ''}</div>
+            <div data-label="Count" class="input-stepper">
                 <button class="stepper-btn minus-btn" data-id="${item.id}">-</button>
                 <input type="number" id="${item.id}" min="0" value="0" class="count-input" readonly>
                 <button class="stepper-btn plus-btn" data-id="${item.id}">+</button>
             </div>
-            <div>${item.sub.toFixed(2)}</div>
-            <div>${item.nonSub ? item.nonSub.toFixed(2) : ''}</div>
-            <div class="price" id="price-${item.id}">0.00</div>
+            <div data-label="Sub Price">${item.sub.toFixed(2)}</div>
+            <div data-label="Non-Sub Price">${item.nonSub ? item.nonSub.toFixed(2) : ''}</div>
+            <div data-label="Price" class="price" id="price-${item.id}">0.00</div>
         `;
         container.appendChild(row);
     });
