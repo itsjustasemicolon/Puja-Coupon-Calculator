@@ -10,27 +10,27 @@ document.addEventListener('DOMContentLoaded', () => {
     const takeawayMinusBtn = document.getElementById('takeaway-minus');
 
     const mealData = [
-        { day: 'Panchami', meal: 'Dinner', type: 'VG', sub: 150.00, nonSub: null, id: 'p_d_vg' },
-        { day: 'Panchami', meal: 'Dinner', type: 'NV', sub: 150.00, nonSub: null, id: 'p_d_nv' },
-        { day: 'Shasthi', meal: 'B/fast', type: 'VG', sub: 50.00, nonSub: null, id: 'sh_b' },
-        { day: 'Shasthi', meal: 'Lunch', type: 'VG', sub: 90.00, nonSub: 120.00, id: 'sh_l' },
-        { day: 'Shasthi', meal: 'Dinner', type: 'VG', sub: 90.00, nonSub: null, id: 'sh_d' },
-        { day: 'Saptami', meal: 'B/fast', type: 'VG', sub: 50.00, nonSub: null, id: 'sa_b' },
-        { day: 'Saptami', meal: 'Lunch', type: 'VG', sub: 100.00, nonSub: 130.00, id: 'sa_l' },
-        { day: 'Saptami', meal: 'Dinner', type: 'VG', sub: 140.00, nonSub: null, id: 'sa_d_vg' },
-        { day: 'Saptami', meal: 'Dinner', type: 'NV', sub: 140.00, nonSub: null, id: 'sa_d_nv' },
-        { day: 'Asthami', meal: 'B/fast', type: 'VG', sub: 50.00, nonSub: null, id: 'as_b' },
-        { day: 'Asthami', meal: 'Lunch', type: 'VG', sub: 130.00, nonSub: 180.00, id: 'as_l' },
-        { day: 'Asthami', meal: 'Dinner', type: 'VG', sub: 80.00, nonSub: null, id: 'as_d' },
-        { day: 'Nabami', meal: 'B/fast', type: 'VG', sub: 50.00, nonSub: null, id: 'na_b' },
-        { day: 'Nabami', meal: 'Lunch', type: 'VG', sub: 190.00, nonSub: 250.00, id: 'na_l_vg' },
-        { day: 'Nabami', meal: 'Lunch', type: 'NV', sub: 210.00, nonSub: 280.00, id: 'na_l_nv' },
-        { day: 'Nabami', meal: 'Dinner', type: 'VG', sub: 140.00, nonSub: null, id: 'na_d_vg' },
-        { day: 'Nabami', meal: 'Dinner', type: 'NV', sub: 140.00, nonSub: null, id: 'na_d_nv' },
-        { day: 'Dashami', meal: 'Lunch', type: 'VG', sub: 150.00, nonSub: 200.00, id: 'da_l_vg' },
-        { day: 'Dashami', meal: 'Lunch', type: 'NV', sub: 220.00, nonSub: 300.00, id: 'da_l_nv' },
-        { day: 'Dashami', meal: 'Dinner', type: 'VG', sub: 210.00, nonSub: null, id: 'da_d_vg' },
-        { day: 'Dashami', meal: 'Dinner', type: 'NV', sub: 160.00, nonSub: null, id: 'da_d_nv' },
+        { day: 'Panchami', meal: 'Dinner', type: 'VG', sub: 150, nonSub: null, id: 'p_d_vg' },
+        { day: 'Panchami', meal: 'Dinner', type: 'NV', sub: 150, nonSub: null, id: 'p_d_nv' },
+        { day: 'Shasthi', meal: 'B/fast', type: 'VG', sub: 50, nonSub: null, id: 'sh_b' },
+        { day: 'Shasthi', meal: 'Lunch', type: 'VG', sub: 90, nonSub: 120, id: 'sh_l' },
+        { day: 'Shasthi', meal: 'Dinner', type: 'VG', sub: 90, nonSub: null, id: 'sh_d' },
+        { day: 'Saptami', meal: 'B/fast', type: 'VG', sub: 50, nonSub: null, id: 'sa_b' },
+        { day: 'Saptami', meal: 'Lunch', type: 'VG', sub: 100, nonSub: 130, id: 'sa_l' },
+        { day: 'Saptami', meal: 'Dinner', type: 'VG', sub: 140, nonSub: null, id: 'sa_d_vg' },
+        { day: 'Saptami', meal: 'Dinner', type: 'NV', sub: 140, nonSub: null, id: 'sa_d_nv' },
+        { day: 'Asthami', meal: 'B/fast', type: 'VG', sub: 50, nonSub: null, id: 'as_b' },
+        { day: 'Asthami', meal: 'Lunch', type: 'VG', sub: 130, nonSub: 180, id: 'as_l' },
+        { day: 'Asthami', meal: 'Dinner', type: 'VG', sub: 80, nonSub: null, id: 'as_d' },
+        { day: 'Nabami', meal: 'B/fast', type: 'VG', sub: 50, nonSub: null, id: 'na_b' },
+        { day: 'Nabami', meal: 'Lunch', type: 'VG', sub: 190, nonSub: 250, id: 'na_l_vg' },
+        { day: 'Nabami', meal: 'Lunch', type: 'NV', sub: 210, nonSub: 280, id: 'na_l_nv' },
+        { day: 'Nabami', meal: 'Dinner', type: 'VG', sub: 140, nonSub: null, id: 'na_d_vg' },
+        { day: 'Nabami', meal: 'Dinner', type: 'NV', sub: 140, nonSub: null, id: 'na_d_nv' },
+        { day: 'Dashami', meal: 'Lunch', type: 'VG', sub: 150, nonSub: 200, id: 'da_l_vg' },
+        { day: 'Dashami', meal: 'Lunch', type: 'NV', sub: 220, nonSub: 300, id: 'da_l_nv' },
+        { day: 'Dashami', meal: 'Dinner', type: 'VG', sub: 210, nonSub: null, id: 'da_d_vg' },
+        { day: 'Dashami', meal: 'Dinner', type: 'NV', sub: 160, nonSub: null, id: 'da_d_nv' },
     ];
 
     // Generate grid
@@ -46,9 +46,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 <input type="number" id="${item.id}" min="0" value="0" class="count-input" readonly>
                 <button class="stepper-btn plus-btn" data-id="${item.id}">+</button>
             </div>
-            <div data-label="Sub Price">${item.sub.toFixed(2)}</div>
-            <div data-label="Non-Sub Price">${item.nonSub ? item.nonSub.toFixed(2) : ''}</div>
-            <div data-label="Price" class="price" id="price-${item.id}">0.00</div>
+            <div data-label="Sub Price">${item.sub}</div>
+            <div data-label="Non-Sub Price">${item.nonSub ? item.nonSub : ''}</div>
+            <div data-label="Price" class="price" id="price-${item.id}">0</div>
         `;
         container.appendChild(row);
     });
@@ -188,7 +188,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Calculate and display price for NV
             if (nvItem) {
                 const nvPrice = (subsidizedNv * nvItem.sub) + (nonSubsidizedNv * (nvItem.nonSub || nvItem.sub));
-                document.getElementById(`price-${nvItem.id}`).textContent = nvPrice.toFixed(2);
+                document.getElementById(`price-${nvItem.id}`).textContent = nvPrice;
                 grandTotal += nvPrice;
                 totalCoupons += nvItem.count;
             }
@@ -196,14 +196,14 @@ document.addEventListener('DOMContentLoaded', () => {
             // Calculate and display price for VG
             if (vgItem) {
                 const vgPrice = (subsidizedVg * vgItem.sub) + (nonSubsidizedVg * (vgItem.nonSub || vgItem.sub));
-                document.getElementById(`price-${vgItem.id}`).textContent = vgPrice.toFixed(2);
+                document.getElementById(`price-${vgItem.id}`).textContent = vgPrice;
                 grandTotal += vgPrice;
                 totalCoupons += vgItem.count;
             }
         }
 
         totalCouponsEl.textContent = totalCoupons;
-        totalPriceEl.textContent = grandTotal.toFixed(2);
+        totalPriceEl.textContent = grandTotal;
 
         // Flash animation for totals
         const totalsSummary = document.querySelector('.totals-summary');
@@ -239,7 +239,7 @@ document.addEventListener('DOMContentLoaded', () => {
             tableHtml += `
                 <tr>
                     <td>Takeaway Packing</td>
-                    <td colspan="2" style="text-align:center;">${takeawayCount} @ ₹${TAKEAWAY_PRICE.toFixed(2)}</td>
+                    <td colspan="2" style="text-align:center;">${takeawayCount} @ ₹${TAKEAWAY_PRICE}</td>
                 </tr>
             `;
         }
@@ -289,8 +289,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     tableHtml += `
                         <tr>
                             <td>${nvItem.day} ${nvItem.meal} <span class="non-veg-text">${nvItem.type === 'NV' ? 'Non-Veg' : ''}</span></td>
-                            <td>${subsidizedNv > 0 ? `${subsidizedNv} @ ₹${nvItem.sub.toFixed(2)}` : ''}</td>
-                            <td>${nonSubsidizedNv > 0 ? `${nonSubsidizedNv} @ ₹${(nvItem.nonSub || nvItem.sub).toFixed(2)}` : ''}</td>
+                            <td>${subsidizedNv > 0 ? `${subsidizedNv} @ ₹${nvItem.sub}` : ''}</td>
+                            <td>${nonSubsidizedNv > 0 ? `${nonSubsidizedNv} @ ₹${(nvItem.nonSub || nvItem.sub)}` : ''}</td>
                         </tr>
                     `;
                 }
@@ -298,8 +298,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     tableHtml += `
                         <tr>
                             <td>${vgItem.day} ${vgItem.meal} <span class="veg-text">${vgItem.type === 'VG' ? 'Veg' : ''}</span></td>
-                            <td>${subsidizedVg > 0 ? `${subsidizedVg} @ ₹${vgItem.sub.toFixed(2)}` : ''}</td>
-                            <td>${nonSubsidizedVg > 0 ? `${nonSubsidizedVg} @ ₹${(vgItem.nonSub || vgItem.sub).toFixed(2)}` : ''}</td>
+                            <td>${subsidizedVg > 0 ? `${subsidizedVg} @ ₹${vgItem.sub}` : ''}</td>
+                            <td>${nonSubsidizedVg > 0 ? `${nonSubsidizedVg} @ ₹${(vgItem.nonSub || vgItem.sub)}` : ''}</td>
                         </tr>
                     `;
                 }
