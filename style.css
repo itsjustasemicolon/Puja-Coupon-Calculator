@@ -7,6 +7,22 @@
     --header-bg: #eef2f7;
     --border-color: #dee2e6;
     --shadow: 0 10px 20px rgba(0,0,0,0.08);
+    --muted-text: #6c757d;
+    --focus-ring: 0 0 0 3px rgba(37, 117, 252, 0.25);
+}
+
+/* Dark theme */
+.theme-dark {
+    --background-color: #0f1220;
+    --card-background: #14182b;
+    --text-color: #e5e7eb;
+    --header-bg: #1a1f35;
+    --border-color: #2a3152;
+    --shadow: 0 10px 20px rgba(0,0,0,0.5);
+}
+
+* {
+    box-sizing: border-box;
 }
 
 body {
@@ -18,6 +34,8 @@ body {
     background-color: var(--background-color);
     margin: 0;
     padding: 2rem;
+    color: var(--text-color);
+    transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .container {
@@ -27,6 +45,7 @@ body {
     box-shadow: var(--shadow);
     width: 100%;
     max-width: 1200px;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 h1 {
@@ -40,6 +59,7 @@ h1 {
     -webkit-text-fill-color: transparent;
 }
 
+
 .main-header {
     display: flex;
     justify-content: space-between;
@@ -49,6 +69,11 @@ h1 {
 
 .main-header h1 {
     margin-bottom: 0;
+}
+
+.header-actions {
+    display: flex;
+    gap: 0.75rem;
 }
 
 .clear-btn {
@@ -67,6 +92,29 @@ h1 {
 .clear-btn:hover {
     background-color: var(--primary-color);
     color: var(--card-background);
+}
+
+.clear-btn:focus-visible, .theme-toggle:focus-visible, .stepper-btn:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+}
+
+.theme-toggle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid var(--border-color);
+    background: var(--card-background);
+    color: var(--text-color);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.theme-toggle:hover {
+    background-color: var(--header-bg);
 }
 
 #calculator-container {
@@ -110,6 +158,10 @@ h1 {
     background-color: #f8f9fa;
 }
 
+.theme-dark .grid-row:not(.header):hover > div {
+    background-color: #1a1f35;
+}
+
 .grid-row input[type="number"] {
     width: 60px;
     padding: 8px;
@@ -133,10 +185,10 @@ h1 {
 }
 
 .stepper-btn {
-    width: 28px;
-    height: 28px;
+    width: 34px;
+    height: 34px;
     border: 1px solid var(--border-color);
-    background-color: #fff;
+    background-color: var(--card-background);
     color: var(--primary-color);
     font-size: 1.2rem;
     font-weight: 600;
@@ -167,13 +219,15 @@ h1 {
 }
 
 .input-stepper .count-input {
-    width: 45px;
-    height: 28px;
+    width: 52px;
+    height: 34px;
     padding: 0;
     border-left: none;
     border-right: none;
     border-radius: 0;
     box-sizing: border-box;
+    background-color: var(--card-background);
+    color: var(--text-color);
 }
 
 .input-stepper .count-input:focus {
@@ -191,6 +245,8 @@ h1 {
     background-color: var(--header-bg);
     border-radius: 8px;
     font-weight: 600;
+    position: relative;
+    transition: background-color 0.2s ease;
 }
 
 .totals-summary {
@@ -239,6 +295,10 @@ h1 {
 .breakdown-table th {
     font-weight: 600;
     background-color: #f8f9fa;
+}
+
+.theme-dark .breakdown-table th {
+    background-color: #1a1f35;
 }
 
 .breakdown-table th:nth-child(2), .breakdown-table th:nth-child(3),
@@ -376,6 +436,11 @@ h1 {
     }
 
     .totals-summary {
+        position: sticky;
+        bottom: 0;
+        background: var(--header-bg);
+        border-top: 1px solid var(--border-color);
+        padding-top: 0.5rem;
         flex-direction: column;
         align-items: flex-start;
         gap: 0.5rem;

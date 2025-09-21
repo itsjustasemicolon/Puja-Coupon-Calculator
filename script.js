@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const totalPriceEl = document.getElementById('total-price');
     const priceBreakdownEl = document.getElementById('price-breakdown');
     const clearAllBtn = document.getElementById('clear-all-btn');
+    const themeToggleBtn = document.getElementById('theme-toggle');
 
     const mealData = [
         { day: 'Panchami', meal: 'Dinner', type: 'VG', sub: 150.00, nonSub: null, id: 'p_d_vg' },
@@ -70,8 +71,38 @@ document.addEventListener('DOMContentLoaded', () => {
             // Manually trigger the input event to recalculate totals
             const event = new Event('input', { bubbles: true });
             input.dispatchEvent(event);
+
+            // Toggle disabled state for minus buttons when value is 0
+            const minusBtn = input.parentElement.querySelector('.minus-btn');
+            if (minusBtn) minusBtn.disabled = value === 0;
         });
     });
+
+    // Initialize minus buttons disabled state
+    document.querySelectorAll('.minus-btn').forEach(btn => btn.disabled = true);
+
+    // Theme toggle + persistence
+    const root = document.documentElement;
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+        root.classList.add('theme-dark');
+        updateThemeIcon(true);
+    } else {
+        // Explicitly set light defaults
+        root.classList.remove('theme-dark');
+        updateThemeIcon(false);
+    }
+
+    themeToggleBtn.addEventListener('click', () => {
+        const isDark = root.classList.toggle('theme-dark');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        updateThemeIcon(isDark);
+    });
+
+    function updateThemeIcon(isDark) {
+        const icon = themeToggleBtn.querySelector('.theme-icon');
+        if (icon) icon.textContent = isDark ? '☀️' : '🌙';
+    }
 
     clearAllBtn.addEventListener('click', () => {
         inputs.forEach(input => {
