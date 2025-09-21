@@ -21,7 +21,7 @@
             </div>
         </div>
         <div id="calculator-container">
-            <!-- Header -->
+            <!-- Header --> 
             <div class="grid-row header">
                 <div>Day</div>
                 <div>Meal</div>
@@ -33,6 +33,14 @@
             </div>
         </div>
         <div class="totals">
+            <div class="takeaway-section">
+                <div class="takeaway-label">Optional Take-Away Count</div>
+                <div class="input-stepper">
+                    <button class="stepper-btn minus-btn" id="takeaway-minus">-</button>
+                    <input type="number" id="takeaway-count" min="0" value="0" class="count-input" readonly>
+                    <button class="stepper-btn plus-btn" id="takeaway-plus">+</button>
+                </div>
+            </div>
             <div class="totals-summary">
                 <div>Total Coupons: <span id="total-coupons">0</span></div>
                 <div>Total Price: &#8377;<span id="total-price">0.00</span></div>

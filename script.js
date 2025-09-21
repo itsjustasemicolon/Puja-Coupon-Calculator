@@ -5,6 +5,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const priceBreakdownEl = document.getElementById('price-breakdown');
     const clearAllBtn = document.getElementById('clear-all-btn');
     const themeToggleBtn = document.getElementById('theme-toggle');
+    const takeawayCountInput = document.getElementById('takeaway-count');
+    const takeawayPlusBtn = document.getElementById('takeaway-plus');
+    const takeawayMinusBtn = document.getElementById('takeaway-minus');
 
     const mealData = [
         { day: 'Panchami', meal: 'Dinner', type: 'VG', sub: 150.00, nonSub: null, id: 'p_d_vg' },
@@ -81,6 +84,21 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize minus buttons disabled state
     document.querySelectorAll('.minus-btn').forEach(btn => btn.disabled = true);
 
+    takeawayPlusBtn.addEventListener('click', () => {
+        takeawayCountInput.value = parseInt(takeawayCountInput.value) + 1;
+        takeawayMinusBtn.disabled = false;
+        calculateTotal();
+    });
+
+    takeawayMinusBtn.addEventListener('click', () => {
+        const currentValue = parseInt(takeawayCountInput.value);
+        if (currentValue > 0) {
+            takeawayCountInput.value = currentValue - 1;
+        }
+        takeawayMinusBtn.disabled = takeawayCountInput.value == 0;
+        calculateTotal();
+    });
+
     // Theme toggle + persistence
     const root = document.documentElement;
     const savedTheme = localStorage.getItem('theme');
@@ -108,6 +126,8 @@ document.addEventListener('DOMContentLoaded', () => {
         inputs.forEach(input => {
             input.value = 0;
         });
+        takeawayCountInput.value = 0;
+        takeawayMinusBtn.disabled = true;
         calculateTotal();
     });
 
@@ -115,6 +135,11 @@ document.addEventListener('DOMContentLoaded', () => {
         let grandTotal = 0;
         let totalCoupons = 0;
         const SUBSIDY_LIMIT = 4;
+        const TAKEAWAY_PRICE = 40;
+
+        // Add takeaway cost
+        const takeawayCount = parseInt(takeawayCountInput.value) || 0;
+        grandTotal += takeawayCount * TAKEAWAY_PRICE;
 
         // Group meals by day and meal name
         const mealGroups = {};
@@ -193,6 +218,7 @@ document.addEventListener('DOMContentLoaded', () => {
         priceBreakdownEl.innerHTML = '';
         let hasItems = false;
         const SUBSIDY_LIMIT = 4;
+        const TAKEAWAY_PRICE = 40;
 
         let tableHtml = `
             <h4>Price Breakdown</h4>
@@ -206,6 +232,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 </thead>
                 <tbody>
         `;
+
+        const takeawayCount = parseInt(takeawayCountInput.value) || 0;
+        if (takeawayCount > 0) {
+            hasItems = true;
+            tableHtml += `
+                <tr>
+                    <td>Takeaway Packing</td>
+                    <td colspan="2" style="text-align:center;">${takeawayCount} @ ₹${TAKEAWAY_PRICE.toFixed(2)}</td>
+                </tr>
+            `;
+        }
 
         const mealGroups = {};
         mealData.forEach(item => {
