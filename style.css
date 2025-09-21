@@ -271,6 +271,16 @@ h1 {
     text-decoration: underline;
 }
 
+.veg-text {
+    color: #28a745; /* Green */
+    font-weight: 600;
+}
+
+.non-veg-text {
+    color: #dc3545; /* Red */
+    font-weight: 600;
+}
+
 .flash {
     animation: flash-animation 0.5s ease-out;
 }

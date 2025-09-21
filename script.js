@@ -8,17 +8,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const mealData = [
         { day: 'Panchami', meal: 'Dinner', type: 'VG', sub: 150.00, nonSub: null, id: 'p_d_vg' },
         { day: 'Panchami', meal: 'Dinner', type: 'NV', sub: 150.00, nonSub: null, id: 'p_d_nv' },
-        { day: 'Shasthi', meal: 'B/fast', type: '', sub: 50.00, nonSub: null, id: 'sh_b' },
-        { day: 'Shasthi', meal: 'Lunch', type: '', sub: 90.00, nonSub: 120.00, id: 'sh_l' },
-        { day: 'Shasthi', meal: 'Dinner', type: '', sub: 90.00, nonSub: null, id: 'sh_d' },
-        { day: 'Saptami', meal: 'B/fast', type: '', sub: 50.00, nonSub: null, id: 'sa_b' },
-        { day: 'Saptami', meal: 'Lunch', type: '', sub: 100.00, nonSub: 130.00, id: 'sa_l' },
+        { day: 'Shasthi', meal: 'B/fast', type: 'VG', sub: 50.00, nonSub: null, id: 'sh_b' },
+        { day: 'Shasthi', meal: 'Lunch', type: 'VG', sub: 90.00, nonSub: 120.00, id: 'sh_l' },
+        { day: 'Shasthi', meal: 'Dinner', type: 'VG', sub: 90.00, nonSub: null, id: 'sh_d' },
+        { day: 'Saptami', meal: 'B/fast', type: 'VG', sub: 50.00, nonSub: null, id: 'sa_b' },
+        { day: 'Saptami', meal: 'Lunch', type: 'VG', sub: 100.00, nonSub: 130.00, id: 'sa_l' },
         { day: 'Saptami', meal: 'Dinner', type: 'VG', sub: 140.00, nonSub: null, id: 'sa_d_vg' },
         { day: 'Saptami', meal: 'Dinner', type: 'NV', sub: 140.00, nonSub: null, id: 'sa_d_nv' },
-        { day: 'Asthami', meal: 'B/fast', type: '', sub: 50.00, nonSub: null, id: 'as_b' },
-        { day: 'Asthami', meal: 'Lunch', type: '', sub: 130.00, nonSub: 180.00, id: 'as_l' },
-        { day: 'Asthami', meal: 'Dinner', type: '', sub: 80.00, nonSub: null, id: 'as_d' },
-        { day: 'Nabami', meal: 'B/fast', type: '', sub: 50.00, nonSub: null, id: 'na_b' },
+        { day: 'Asthami', meal: 'B/fast', type: 'VG', sub: 50.00, nonSub: null, id: 'as_b' },
+        { day: 'Asthami', meal: 'Lunch', type: 'VG', sub: 130.00, nonSub: 180.00, id: 'as_l' },
+        { day: 'Asthami', meal: 'Dinner', type: 'VG', sub: 80.00, nonSub: null, id: 'as_d' },
+        { day: 'Nabami', meal: 'B/fast', type: 'VG', sub: 50.00, nonSub: null, id: 'na_b' },
         { day: 'Nabami', meal: 'Lunch', type: 'VG', sub: 190.00, nonSub: 250.00, id: 'na_l_vg' },
         { day: 'Nabami', meal: 'Lunch', type: 'NV', sub: 210.00, nonSub: 280.00, id: 'na_l_nv' },
         { day: 'Nabami', meal: 'Dinner', type: 'VG', sub: 140.00, nonSub: null, id: 'na_d_vg' },
@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
         row.innerHTML = `
             <div data-label="Day">${item.day}</div>
             <div data-label="Meal">${item.meal}</div>
-            <div data-label="Type">${item.type === 'VG' ? 'Veg' : item.type === 'NV' ? 'Non-Veg' : ''}</div>
+            <div data-label="Type" class="${item.type === 'VG' ? 'veg-text' : item.type === 'NV' ? 'non-veg-text' : ''}">${item.type === 'VG' ? 'Veg' : item.type === 'NV' ? 'Non-Veg' : ''}</div>
             <div data-label="Count" class="input-stepper">
                 <button class="stepper-btn minus-btn" data-id="${item.id}">-</button>
                 <input type="number" id="${item.id}" min="0" value="0" class="count-input" readonly>
@@ -220,7 +220,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (nvItem && nvItem.count > 0) {
                     tableHtml += `
                         <tr>
-                            <td>${nvItem.day} ${nvItem.meal} ${nvItem.type === 'NV' ? 'Non-Veg' : nvItem.type === 'VG' ? 'Veg' : ''}</td>
+                            <td>${nvItem.day} ${nvItem.meal} <span class="non-veg-text">${nvItem.type === 'NV' ? 'Non-Veg' : ''}</span></td>
                             <td>${subsidizedNv > 0 ? `${subsidizedNv} @ ₹${nvItem.sub.toFixed(2)}` : ''}</td>
                             <td>${nonSubsidizedNv > 0 ? `${nonSubsidizedNv} @ ₹${(nvItem.nonSub || nvItem.sub).toFixed(2)}` : ''}</td>
                         </tr>
@@ -229,7 +229,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (vgItem && vgItem.count > 0) {
                     tableHtml += `
                         <tr>
-                            <td>${vgItem.day} ${vgItem.meal} ${vgItem.type === 'NV' ? 'Non-Veg' : vgItem.type === 'VG' ? 'Veg' : ''}</td>
+                            <td>${vgItem.day} ${vgItem.meal} <span class="veg-text">${vgItem.type === 'VG' ? 'Veg' : ''}</span></td>
                             <td>${subsidizedVg > 0 ? `${subsidizedVg} @ ₹${vgItem.sub.toFixed(2)}` : ''}</td>
                             <td>${nonSubsidizedVg > 0 ? `${nonSubsidizedVg} @ ₹${(vgItem.nonSub || vgItem.sub).toFixed(2)}` : ''}</td>
                         </tr>
