@@ -381,12 +381,19 @@ h1 {
 
 .footer a {
     color: var(--primary-color);
-    text-decoration: none;
+    text-decoration: underline;
     font-weight: 600;
 }
 
 .footer a:hover {
     text-decoration: underline;
+}
+
+.footer .rights-reserved {
+    margin-top: 0.5rem;
+    font-size: 0.8rem;
+    color: var(--muted-text);
+    font-weight: 300;
 }
 
 .veg-text {
