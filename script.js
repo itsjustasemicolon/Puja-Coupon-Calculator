@@ -123,16 +123,10 @@ document.addEventListener('DOMContentLoaded', () => {
     tooltip.id = 'menu-tooltip';
     tooltip.style.display = 'none';
     document.body.appendChild(tooltip);
-    let activeTrigger = null;
-    let lastTouchTime = 0;
 
     const hideTooltip = () => {
         tooltip.style.display = 'none';
         tooltip.setAttribute('aria-hidden', 'true');
-        if (activeTrigger) {
-            activeTrigger.setAttribute('aria-expanded', 'false');
-        }
-        activeTrigger = null;
     };
 
     const getMenuKey = (day, meal, type) => {
@@ -159,11 +153,6 @@ document.addEventListener('DOMContentLoaded', () => {
         tooltip.innerHTML = getMenuContent(day, meal, type);
         tooltip.style.display = 'block';
         tooltip.setAttribute('aria-hidden', 'false');
-        if (activeTrigger && activeTrigger !== triggerEl) {
-            activeTrigger.setAttribute('aria-expanded', 'false');
-        }
-        activeTrigger = triggerEl;
-        activeTrigger.setAttribute('aria-expanded', 'true');
         const rect = triggerEl.getBoundingClientRect();
         const padding = 8;
         const top = Math.min(window.innerHeight - tooltip.offsetHeight - padding, rect.bottom + 8);
@@ -177,62 +166,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Attach hover and click handlers
     document.querySelectorAll('.menu-trigger').forEach(el => {
-        el.setAttribute('aria-expanded', 'false');
-        el.addEventListener('mouseenter', () => {
-            // Ignore synthetic mouse events right after touch
-            if (Date.now() - lastTouchTime < 600) return;
-            showTooltip(el);
-        });
+        el.addEventListener('mouseenter', () => showTooltip(el));
         el.addEventListener('mouseleave', () => hideTooltip());
-        el.addEventListener('touchstart', (e) => {
-            lastTouchTime = Date.now();
-            e.stopPropagation();
-            // Toggle tooltip on single tap
-            if (tooltip.style.display === 'block' && activeTrigger === el) {
-                hideTooltip();
-            } else {
-                showTooltip(el);
-            }
-        }, { passive: true });
         el.addEventListener('click', (e) => {
-            // Suppress click immediately following a touch to avoid double-toggle
-            if (Date.now() - lastTouchTime < 600) return;
             e.stopPropagation();
-            if (tooltip.style.display === 'block' && activeTrigger === el) {
-                hideTooltip();
-            } else {
-                showTooltip(el);
-            }
-        });
-        el.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                e.stopPropagation();
-                if (tooltip.style.display === 'block' && activeTrigger === el) {
-                    hideTooltip();
-                } else {
-                    showTooltip(el);
-                }
-            }
+            if (tooltip.style.display === 'block') hideTooltip(); else showTooltip(el);
         });
     });
 
-    // Hide tooltip on outside click/tap, scroll, or resize
+    // Hide tooltip on outside click, scroll, or resize
     document.addEventListener('click', hideTooltip);
-    document.addEventListener('touchstart', (e) => {
-        // If tap is outside the tooltip and not on the active trigger, hide
-        if (tooltip.style.display === 'block') {
-            const path = e.composedPath ? e.composedPath() : [];
-            if (!path.includes(tooltip) && (!activeTrigger || !path.includes(activeTrigger))) {
-                hideTooltip();
-            }
-        }
-    }, { passive: true });
     window.addEventListener('scroll', hideTooltip, true);
     window.addEventListener('resize', hideTooltip);
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') hideTooltip();
-    });
 
     // Initialize minus buttons disabled state
     document.querySelectorAll('.minus-btn').forEach(btn => btn.disabled = true);
@@ -255,14 +200,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // Theme toggle + persistence
     const root = document.documentElement;
     const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'dark') {
+    // Default to dark mode when no saved preference; otherwise honor saved choice
+    const isDarkOnLoad = savedTheme ? savedTheme === 'dark' : true;
+    if (isDarkOnLoad) {
         root.classList.add('theme-dark');
-        updateThemeIcon(true);
     } else {
-        // Explicitly set light defaults
         root.classList.remove('theme-dark');
-        updateThemeIcon(false);
     }
+    updateThemeIcon(isDarkOnLoad);
 
     themeToggleBtn.addEventListener('click', () => {
         const isDark = root.classList.toggle('theme-dark');
