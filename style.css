@@ -151,6 +151,13 @@ h1 {
     box-shadow: var(--focus-ring);
 }
 
+.tap-hint {
+    display: none;
+    margin-left: 8px;
+    font-size: 0.75rem;
+    color: var(--muted-text);
+}
+
 .grid-row:last-child > div {
     border-bottom: none;
 }
@@ -466,6 +473,11 @@ h1 {
         font-size: 0.75rem;
         color: #888;
         margin-bottom: 2px;
+    }
+
+    /* Show tap hint only on mobile */
+    .tap-hint {
+        display: inline-block;
     }
 
     /* Specific alignment for some cells */
