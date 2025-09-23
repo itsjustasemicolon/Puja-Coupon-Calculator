@@ -141,8 +141,14 @@ h1 {
 }
 
 .menu-trigger {
-    text-decoration: underline dotted;
+    text-decoration: underline;
+    text-underline-offset: 2px;
     cursor: pointer;
+}
+
+.menu-trigger:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
 }
 
 .grid-row:last-child > div {
