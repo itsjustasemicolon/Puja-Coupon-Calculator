@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
         row.classList.add('grid-row');
         row.innerHTML = `
             <div data-label="Day">${item.day}</div>
-            <div data-label="Meal"><span class="menu-trigger" data-day="${item.day}" data-meal="${item.meal}" data-type="${item.type || 'NA'}" role="button" tabindex="0" aria-label="View menu">${item.meal}</span><span class="tap-hint">Tap to open</span></div>
+            <div data-label="Meal"><span class="menu-trigger" data-day="${item.day}" data-meal="${item.meal}" data-type="${item.type || 'NA'}" role="button" tabindex="0" aria-label="View menu">${item.meal}</span><span class="tap-hint">Tap for menu</span></div>
             <div data-label="Type" class="${item.type === 'VG' ? 'veg-text' : item.type === 'NV' ? 'non-veg-text' : ''}">${item.type === 'VG' ? 'Veg' : item.type === 'NV' ? 'Non-Veg' : ''}</div>
             <div data-label="Count" class="input-stepper">
                 <button class="stepper-btn minus-btn" data-id="${item.id}">-</button>
