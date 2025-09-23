@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const priceBreakdownEl = document.getElementById('price-breakdown');
     const clearAllBtn = document.getElementById('clear-all-btn');
     const themeToggleBtn = document.getElementById('theme-toggle');
+    const themeHint = document.querySelector('.theme-hint');
     const takeawayCountInput = document.getElementById('takeaway-count');
     const takeawayPlusBtn = document.getElementById('takeaway-plus');
     const takeawayMinusBtn = document.getElementById('takeaway-minus');
@@ -208,16 +209,24 @@ document.addEventListener('DOMContentLoaded', () => {
         root.classList.remove('theme-dark');
     }
     updateThemeIcon(isDarkOnLoad);
+    updateThemeHint(isDarkOnLoad);
 
     themeToggleBtn.addEventListener('click', () => {
         const isDark = root.classList.toggle('theme-dark');
         localStorage.setItem('theme', isDark ? 'dark' : 'light');
         updateThemeIcon(isDark);
+        updateThemeHint(isDark);
     });
 
     function updateThemeIcon(isDark) {
         const icon = themeToggleBtn.querySelector('.theme-icon');
         if (icon) icon.textContent = isDark ? '☀️' : '🌙';
+    }
+
+    function updateThemeHint(isDark) {
+        if (themeHint) {
+            themeHint.textContent = isDark ? 'Light Mode' : 'Dark Mode';
+        }
     }
 
     clearAllBtn.addEventListener('click', () => {
