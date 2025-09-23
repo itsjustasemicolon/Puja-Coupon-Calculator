@@ -33,13 +33,50 @@ document.addEventListener('DOMContentLoaded', () => {
         { day: 'Dashami', meal: 'Dinner', type: 'NV', sub: 160, nonSub: null, id: 'da_d_nv' },
     ];
 
+    // Menu data mapping (edit this to add real menus)
+    // Key format: `${day}-${meal}-${type || 'NA'}`
+    const menuDataMap = {
+        // PANCHAMI (27-Sep / Saturday)
+        'Panchami-Dinner-VG': ['Fried Rice', 'Paneer Butter Masala'],
+        'Panchami-Dinner-NV': ['Fried Rice', 'Chicken Butter Masala (3pc)'],
+
+        // SHASTHI (28-Sep / Sunday)
+        'Shasthi-B/fast-NA': ['Veg Noodles', 'Ketchup', 'French Fries (4pc)'],
+        'Shasthi-Lunch-NA': ['Luchi', 'Begun Bhaja (2 pc)', 'Chanar Kalia (2 pc)', 'Alu-green motor', 'Chutney', 'Papad', 'Sweet (1pc)'],
+        'Shasthi-Dinner-NA': ['Kachuri (4pc)', 'Aloo Dum (4pc)', 'Vegetable Chop (1pc)', 'Pantua (1pc)'],
+
+        // SAPTAMI (29-Sep / Monday)
+        'Saptami-B/fast-NA': ['Idli (4 pc)', 'Sambar', 'Chatni', 'Chanar Jilipi (1pc)'],
+        'Saptami-Lunch-NA': ['Khichudi', 'Beguni (2)', 'Alu Bhaja', 'Labra', 'Pineapple Chutney', 'Papad', 'Rosogolla (1pc)'],
+        'Saptami-Dinner-NV': ['Fried Rice', 'Chilli Chicken (4pc)'],
+        'Saptami-Dinner-VG': ['Fried Rice', 'Shahi Paneer'],
+
+        // ASTHAMI (30-Sep / Tuesday)
+        'Asthami-B/fast-NA': ['Plain Porotha (3 pc)', 'Sada Alur Chochori', 'Bonde'],
+        'Asthami-Lunch-NA': ['Luchi (4 pcs)', 'Begun Bhaja', 'Dhoka Dalna', 'Basanti Polao', 'Potol Dorma', 'Mixed Chutney', 'Papad', 'Ice-cream (Metro-Butterscotch)', 'Kamolavog (1)'],
+        'Asthami-Dinner-NA': ['Dal Puri (4 pc)', 'Dhoniapata-Pudina Chatni', 'Alu-Phukopi', 'Ladykini (1)'],
+
+        // NABAMI (01-Oct / Wednesday)
+        'Nabami-B/fast-NA': ['Luchi (4 pc)', 'Cholar Dal w/ Narkel', 'Ladoo (1 pc)'],
+        'Nabami-Lunch-NV': ['Plain Rice', 'Sobji Diye Sona Moong Dal', 'Jhuro Alu Bhaja', 'Khejur Aam Sotto Chutni', 'Papad', 'Misti Doi (Amul/85g)', 'Gulab Jamun (1pc)', 'Mutton (3pc) with Alu (1 pc)/Katla Macher Kalia (2pc)'],
+        'Nabami-Lunch-VG': ['Plain Rice', 'Sobji Diye Sona Moong Dal', 'Jhuro Alu Bhaja', 'Khejur Aam Sotto Chutni', 'Papad', 'Misti Doi (Amul/85g)', 'Gulab Jamun (1pc)', 'Navratna Korma', 'Chanar Kofta'],
+        'Nabami-Dinner-NV': ['Fried Rice', 'Chicken Manchurian'],
+        'Nabami-Dinner-VG': ['Fried Rice', 'Veg Manchurian'],
+
+        // DASHAMI (02-Oct / Thursday)
+        'Dashami-Lunch-NV': ['Plain Rice', 'Sukto', 'Mixed chutney', 'Papad', 'Sweet (1pc)', 'Shorshe Ilish'],
+        'Dashami-Lunch-VG': ['Plain Rice', 'Sukto', 'Mixed chutney', 'Papad', 'Sweet (1pc)', 'Alu-motor - Paneer'],
+        'Dashami-Dinner-NV': ['Chicken Biriyani', 'Chicken Chaap (1 pc)'],
+        'Dashami-Dinner-VG': ['Jeera Rice', 'Paneer Butter Masala']
+    };
+
     // Generate grid
     mealData.forEach(item => {
         const row = document.createElement('div');
         row.classList.add('grid-row');
         row.innerHTML = `
             <div data-label="Day">${item.day}</div>
-            <div data-label="Meal">${item.meal}</div>
+            <div data-label="Meal"><span class="menu-trigger" data-day="${item.day}" data-meal="${item.meal}" data-type="${item.type || 'NA'}" title="View menu">${item.meal}</span></div>
             <div data-label="Type" class="${item.type === 'VG' ? 'veg-text' : item.type === 'NV' ? 'non-veg-text' : ''}">${item.type === 'VG' ? 'Veg' : item.type === 'NV' ? 'Non-Veg' : ''}</div>
             <div data-label="Count" class="input-stepper">
                 <button class="stepper-btn minus-btn" data-id="${item.id}">-</button>
@@ -80,6 +117,67 @@ document.addEventListener('DOMContentLoaded', () => {
             if (minusBtn) minusBtn.disabled = value === 0;
         });
     });
+
+    // Tooltip element (single instance)
+    const tooltip = document.createElement('div');
+    tooltip.id = 'menu-tooltip';
+    tooltip.style.display = 'none';
+    document.body.appendChild(tooltip);
+
+    const hideTooltip = () => {
+        tooltip.style.display = 'none';
+        tooltip.setAttribute('aria-hidden', 'true');
+    };
+
+    const getMenuKey = (day, meal, type) => {
+        const t = type && type !== '' ? type : 'NA';
+        return `${day}-${meal}-${t}`;
+    };
+
+    const getMenuContent = (day, meal, type) => {
+        const key = getMenuKey(day, meal, type);
+        let items = menuDataMap[key];
+        if (!items && type && type !== 'NA') {
+            // fallback to no-type key
+            items = menuDataMap[`${day}-${meal}-NA`];
+        }
+        if (!items) return `<div class="menu-title">${day} ${meal}${type && type !== 'NA' ? ' ('+ (type==='VG'?'Veg':'Non-Veg') +')' : ''}</div><div class="menu-empty">Menu not set</div>`;
+        const list = items.map(i => `<li>${i}</li>`).join('');
+        return `<div class="menu-title">${day} ${meal}${type && type !== 'NA' ? ' ('+ (type==='VG'?'Veg':'Non-Veg') +')' : ''}</div><ul class="menu-list">${list}</ul>`;
+    };
+
+    const showTooltip = (triggerEl) => {
+        const day = triggerEl.getAttribute('data-day');
+        const meal = triggerEl.getAttribute('data-meal');
+        const type = triggerEl.getAttribute('data-type');
+        tooltip.innerHTML = getMenuContent(day, meal, type);
+        tooltip.style.display = 'block';
+        tooltip.setAttribute('aria-hidden', 'false');
+        const rect = triggerEl.getBoundingClientRect();
+        const padding = 8;
+        const top = Math.min(window.innerHeight - tooltip.offsetHeight - padding, rect.bottom + 8);
+        let left = rect.left;
+        if (left + tooltip.offsetWidth + padding > window.innerWidth) {
+            left = window.innerWidth - tooltip.offsetWidth - padding;
+        }
+        tooltip.style.top = `${Math.max(padding, top)}px`;
+        tooltip.style.left = `${Math.max(padding, left)}px`;
+    };
+
+    // Attach hover and click handlers
+    document.querySelectorAll('.menu-trigger').forEach(el => {
+        el.addEventListener('mouseenter', () => showTooltip(el));
+        el.addEventListener('mouseleave', () => hideTooltip());
+        el.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (tooltip.style.display === 'block') hideTooltip(); else showTooltip(el);
+        });
+    });
+
+    // Hide tooltip on outside click, scroll, or resize
+    document.addEventListener('click', hideTooltip);
+    window.addEventListener('scroll', hideTooltip, true);
+    window.addEventListener('resize', hideTooltip);
 
     // Initialize minus buttons disabled state
     document.querySelectorAll('.minus-btn').forEach(btn => btn.disabled = true);
