@@ -248,8 +248,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Theme toggle + persistence
     const root = document.documentElement;
     const savedTheme = localStorage.getItem('theme');
-    // Default to dark mode when no saved preference; otherwise honor saved choice
-    const isDarkOnLoad = savedTheme ? savedTheme === 'dark' : true;
+    // Default to light mode when no saved preference; otherwise honor saved choice
+    const isDarkOnLoad = savedTheme === 'dark';
     if (isDarkOnLoad) {
         root.classList.add('theme-dark');
     } else {
