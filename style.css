@@ -281,8 +281,9 @@ h1 {
 
 .takeaway-inline {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.25rem;
     margin-top: 0.5rem;
     justify-content: center;
 }
@@ -290,6 +291,7 @@ h1 {
 .takeaway-inline .tw-label {
     font-size: 0.8rem;
     color: var(--muted-text);
+    font-weight: 600;
 }
 
 .input-stepper.small .stepper-btn {
@@ -554,6 +556,15 @@ h1 {
         font-size: 0.75rem;
         color: #888;
         margin-bottom: 2px;
+    }
+
+    /* Make takeaway label mimic the cell label on mobile and right-align like Count */
+    .count-cell .takeaway-inline .tw-label {
+        width: 100%;
+        text-align: right;
+        font-size: 0.75rem;
+        color: #888;
+        margin-top: 0.25rem;
     }
 
     /* Show tap hint only on mobile */
