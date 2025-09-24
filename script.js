@@ -146,10 +146,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             input.value = value;
-            // Manually trigger the input event to recalculate totals
-            const event = new Event('input', { bubbles: true });
-            input.dispatchEvent(event);
-
             // Toggle disabled state for minus buttons when value is 0
             const minusBtn = input.parentElement.querySelector('.minus-btn');
             if (minusBtn) minusBtn.disabled = value === 0;
@@ -168,6 +164,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (twMinus) twMinus.disabled = twVal === 0;
                 if (twPlus) twPlus.disabled = twVal >= value;
             }
+            // Now recalculate totals after syncing takeaway to avoid stale prices
+            const event = new Event('input', { bubbles: true });
+            input.dispatchEvent(event);
         });
     });
 
@@ -332,11 +331,11 @@ document.addEventListener('DOMContentLoaded', () => {
             let twVg = 0;
             if (nvItem) {
                 const twEl = document.getElementById(`tw-${nvItem.id}`);
-                if (twEl) twNv = parseInt(twEl.value) || 0;
+                if (twEl) twNv = Math.min(parseInt(twEl.value) || 0, nvItem.count);
             }
             if (vgItem) {
                 const twEl = document.getElementById(`tw-${vgItem.id}`);
-                if (twEl) twVg = parseInt(twEl.value) || 0;
+                if (twEl) twVg = Math.min(parseInt(twEl.value) || 0, vgItem.count);
             }
 
             let subsidizedNv = 0;
