@@ -6,24 +6,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const clearAllBtn = document.getElementById('clear-all-btn');
     const themeToggleBtn = document.getElementById('theme-toggle');
     const themeHint = document.querySelector('.theme-hint');
-    const takeawayCountInput = document.getElementById('takeaway-count');
-    const takeawayPlusBtn = document.getElementById('takeaway-plus');
-    const takeawayMinusBtn = document.getElementById('takeaway-minus');
+    // Per-row takeaway controls will be created dynamically for Lunch items
 
     const mealData = [
         { day: 'Panchami', meal: 'Dinner', type: 'VG', sub: 150, nonSub: null, id: 'p_d_vg' },
         { day: 'Panchami', meal: 'Dinner', type: 'NV', sub: 150, nonSub: null, id: 'p_d_nv' },
-        { day: 'Shasthi', meal: 'B/fast', type: 'VG', sub: 50, nonSub: null, id: 'sh_b' },
-        { day: 'Shasthi', meal: 'Lunch', type: 'VG', sub: 90, nonSub: 120, id: 'sh_l' },
-        { day: 'Shasthi', meal: 'Dinner', type: 'VG', sub: 90, nonSub: null, id: 'sh_d' },
-        { day: 'Saptami', meal: 'B/fast', type: 'VG', sub: 50, nonSub: null, id: 'sa_b' },
-        { day: 'Saptami', meal: 'Lunch', type: 'VG', sub: 100, nonSub: 130, id: 'sa_l' },
+        { day: 'Shasthi', meal: 'B/fast', type: '', sub: 50, nonSub: null, id: 'sh_b' },
+        { day: 'Shasthi', meal: 'Lunch', type: '', sub: 90, nonSub: 120, id: 'sh_l' },
+        { day: 'Shasthi', meal: 'Dinner', type: '', sub: 90, nonSub: null, id: 'sh_d' },
+        { day: 'Saptami', meal: 'B/fast', type: '', sub: 50, nonSub: null, id: 'sa_b' },
+        { day: 'Saptami', meal: 'Lunch', type: '', sub: 100, nonSub: 130, id: 'sa_l' },
         { day: 'Saptami', meal: 'Dinner', type: 'VG', sub: 140, nonSub: null, id: 'sa_d_vg' },
         { day: 'Saptami', meal: 'Dinner', type: 'NV', sub: 140, nonSub: null, id: 'sa_d_nv' },
-        { day: 'Asthami', meal: 'B/fast', type: 'VG', sub: 50, nonSub: null, id: 'as_b' },
-        { day: 'Asthami', meal: 'Lunch', type: 'VG', sub: 130, nonSub: 180, id: 'as_l' },
-        { day: 'Asthami', meal: 'Dinner', type: 'VG', sub: 80, nonSub: null, id: 'as_d' },
-        { day: 'Nabami', meal: 'B/fast', type: 'VG', sub: 50, nonSub: null, id: 'na_b' },
+        { day: 'Asthami', meal: 'B/fast', type: '', sub: 50, nonSub: null, id: 'as_b' },
+        { day: 'Asthami', meal: 'Lunch', type: '', sub: 130, nonSub: 180, id: 'as_l' },
+        { day: 'Asthami', meal: 'Dinner', type: '', sub: 80, nonSub: null, id: 'as_d' },
+        { day: 'Nabami', meal: 'B/fast', type: '', sub: 50, nonSub: null, id: 'na_b' },
         { day: 'Nabami', meal: 'Lunch', type: 'VG', sub: 190, nonSub: 250, id: 'na_l_vg' },
         { day: 'Nabami', meal: 'Lunch', type: 'NV', sub: 210, nonSub: 280, id: 'na_l_nv' },
         { day: 'Nabami', meal: 'Dinner', type: 'VG', sub: 140, nonSub: null, id: 'na_d_vg' },
@@ -75,15 +73,31 @@ document.addEventListener('DOMContentLoaded', () => {
     mealData.forEach(item => {
         const row = document.createElement('div');
         row.classList.add('grid-row');
+        // Build the Count cell content with optional takeaway for Lunch only (wrapped to keep 7 columns)
+        const countCellHtml = `
+            <div data-label="Count" class="count-cell">
+                <div class="input-stepper">
+                    <button class="stepper-btn minus-btn" data-id="${item.id}">-</button>
+                    <input type="number" id="${item.id}" min="0" value="0" class="count-input" readonly>
+                    <button class="stepper-btn plus-btn" data-id="${item.id}">+</button>
+                </div>
+                ${item.meal === 'Lunch' ? `
+                <div class="takeaway-inline">
+                    <span class="tw-label">Takeaway</span>
+                    <div class="input-stepper small" aria-label="Takeaway count for ${item.day} ${item.meal}${item.type ? ' ' + (item.type==='VG'?'Veg':'Non-Veg') : ''}">
+                        <button class="stepper-btn minus-btn" data-takeaway-for="${item.id}">-</button>
+                        <input type="number" id="tw-${item.id}" min="0" value="0" class="count-input" readonly>
+                        <button class="stepper-btn plus-btn" data-takeaway-for="${item.id}">+</button>
+                    </div>
+                </div>
+                ` : ''}
+            </div>
+        `;
         row.innerHTML = `
             <div data-label="Day">${item.day}</div>
             <div data-label="Meal"><span class="menu-trigger" data-day="${item.day}" data-meal="${item.meal}" data-type="${item.type || 'NA'}" role="button" tabindex="0" aria-label="View menu">${item.meal}</span><span class="tap-hint">Tap for menu</span></div>
-            <div data-label="Type" class="${item.type === 'VG' ? 'veg-text' : item.type === 'NV' ? 'non-veg-text' : ''}">${item.type === 'VG' ? 'Veg' : item.type === 'NV' ? 'Non-Veg' : ''}</div>
-            <div data-label="Count" class="input-stepper">
-                <button class="stepper-btn minus-btn" data-id="${item.id}">-</button>
-                <input type="number" id="${item.id}" min="0" value="0" class="count-input" readonly>
-                <button class="stepper-btn plus-btn" data-id="${item.id}">+</button>
-            </div>
+            <div data-label="Type" class="${item.type === 'VG' ? 'veg-text' : item.type === 'NV' ? 'non-veg-text' : 'type-na'}">${item.type === 'VG' ? 'Veg' : item.type === 'NV' ? 'Non-Veg' : '—'}</div>
+            ${countCellHtml}
             <div data-label="Sub Price">${item.sub}</div>
             <div data-label="Non-Sub Price">${item.nonSub ? item.nonSub : ''}</div>
             <div data-label="Price" class="price" id="price-${item.id}">0</div>
@@ -100,6 +114,29 @@ document.addEventListener('DOMContentLoaded', () => {
         button.addEventListener('click', (e) => {
             const id = e.target.dataset.id;
             const input = document.getElementById(id);
+            // If this is a takeaway control, handle separately
+            const twFor = e.target.dataset.takeawayFor;
+            if (twFor) {
+                const twInput = document.getElementById(`tw-${twFor}`);
+                const mainInput = document.getElementById(twFor);
+                const mainCount = parseInt(mainInput?.value) || 0;
+                let twValue = parseInt(twInput.value) || 0;
+                if (e.target.classList.contains('plus-btn')) {
+                    if (twValue < mainCount) twValue++;
+                } else if (e.target.classList.contains('minus-btn')) {
+                    twValue = Math.max(0, twValue - 1);
+                }
+                twInput.value = twValue;
+                // Toggle disabled for takeaway buttons
+                const twStepper = twInput.parentElement;
+                const minusBtn = twStepper.querySelector('.minus-btn');
+                const plusBtn = twStepper.querySelector('.plus-btn');
+                if (minusBtn) minusBtn.disabled = twValue === 0;
+                if (plusBtn) plusBtn.disabled = twValue >= mainCount;
+                calculateTotal();
+                return;
+            }
+
             let value = parseInt(input.value);
 
             if (e.target.classList.contains('plus-btn')) {
@@ -116,6 +153,21 @@ document.addEventListener('DOMContentLoaded', () => {
             // Toggle disabled state for minus buttons when value is 0
             const minusBtn = input.parentElement.querySelector('.minus-btn');
             if (minusBtn) minusBtn.disabled = value === 0;
+
+            // Sync corresponding takeaway control: cap to main count and update button states
+            const twInput = document.getElementById(`tw-${id}`);
+            if (twInput) {
+                let twVal = parseInt(twInput.value) || 0;
+                if (twVal > value) {
+                    twVal = value;
+                    twInput.value = twVal;
+                }
+                const twStepper = twInput.parentElement;
+                const twMinus = twStepper.querySelector('.minus-btn');
+                const twPlus = twStepper.querySelector('.plus-btn');
+                if (twMinus) twMinus.disabled = twVal === 0;
+                if (twPlus) twPlus.disabled = twVal >= value;
+            }
         });
     });
 
@@ -182,20 +234,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initialize minus buttons disabled state
     document.querySelectorAll('.minus-btn').forEach(btn => btn.disabled = true);
-
-    takeawayPlusBtn.addEventListener('click', () => {
-        takeawayCountInput.value = parseInt(takeawayCountInput.value) + 1;
-        takeawayMinusBtn.disabled = false;
-        calculateTotal();
-    });
-
-    takeawayMinusBtn.addEventListener('click', () => {
-        const currentValue = parseInt(takeawayCountInput.value);
-        if (currentValue > 0) {
-            takeawayCountInput.value = currentValue - 1;
-        }
-        takeawayMinusBtn.disabled = takeawayCountInput.value == 0;
-        calculateTotal();
+    // Initialize takeaway plus buttons: disabled until main count > 0
+    document.querySelectorAll('input[id^="tw-"]').forEach(twInput => {
+        const mainId = twInput.id.replace('tw-','');
+        const mainVal = parseInt(document.getElementById(mainId)?.value) || 0;
+        const twStepper = twInput.parentElement;
+        const twPlus = twStepper.querySelector('.plus-btn');
+        const twMinus = twStepper.querySelector('.minus-btn');
+        if (twPlus) twPlus.disabled = mainVal === 0;
+        if (twMinus) twMinus.disabled = true; // starts at 0
     });
 
     // Theme toggle + persistence
@@ -233,8 +280,15 @@ document.addEventListener('DOMContentLoaded', () => {
         inputs.forEach(input => {
             input.value = 0;
         });
-        takeawayCountInput.value = 0;
-        takeawayMinusBtn.disabled = true;
+        // Reset all per-row takeaway inputs and buttons
+        document.querySelectorAll('input[id^="tw-"]').forEach(tw => {
+            tw.value = 0;
+            const twStepper = tw.parentElement;
+            const twMinus = twStepper.querySelector('.minus-btn');
+            const twPlus = twStepper.querySelector('.plus-btn');
+            if (twMinus) twMinus.disabled = true;
+            if (twPlus) twPlus.disabled = true; // main counts are 0 after reset
+        });
         calculateTotal();
     });
 
@@ -244,9 +298,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const SUBSIDY_LIMIT = 4;
         const TAKEAWAY_PRICE = 40;
 
-        // Add takeaway cost
-        const takeawayCount = parseInt(takeawayCountInput.value) || 0;
-        grandTotal += takeawayCount * TAKEAWAY_PRICE;
+        // Sum per-lunch takeaway counts and add cost
+        let totalTakeaway = 0;
+        document.querySelectorAll('input[id^="tw-"]').forEach(tw => {
+            totalTakeaway += (parseInt(tw.value) || 0);
+        });
+        grandTotal += totalTakeaway * TAKEAWAY_PRICE;
 
         // Group meals by day and meal name
         const mealGroups = {};
@@ -325,7 +382,7 @@ document.addEventListener('DOMContentLoaded', () => {
         priceBreakdownEl.innerHTML = '';
         let hasItems = false;
         const SUBSIDY_LIMIT = 4;
-        const TAKEAWAY_PRICE = 40;
+    const TAKEAWAY_PRICE = 40;
 
         let tableHtml = `
             <h4>Price Breakdown</h4>
@@ -335,21 +392,13 @@ document.addEventListener('DOMContentLoaded', () => {
                         <th>Meal</th>
                         <th>Subsidized</th>
                         <th>Non-Subsidized</th>
+                        <th>Takeaway</th>
                     </tr>
                 </thead>
                 <tbody>
         `;
 
-        const takeawayCount = parseInt(takeawayCountInput.value) || 0;
-        if (takeawayCount > 0) {
-            hasItems = true;
-            tableHtml += `
-                <tr>
-                    <td>Takeaway Packing</td>
-                    <td colspan="2" style="text-align:center;">${takeawayCount} @ ₹${TAKEAWAY_PRICE}</td>
-                </tr>
-            `;
-        }
+        // Takeaway rows will be shown per Lunch group below
 
         const mealGroups = {};
         mealData.forEach(item => {
@@ -372,44 +421,66 @@ document.addEventListener('DOMContentLoaded', () => {
                 else nvItem = { ...item, count };
             });
 
-            if ((nvItem && nvItem.count > 0) || (vgItem && vgItem.count > 0)) {
+            // Takeaway per item (Lunch rows have tw inputs)
+            let twNv = 0;
+            let twVg = 0;
+            if (nvItem) {
+                const twEl = document.getElementById(`tw-${nvItem.id}`);
+                if (twEl) twNv = (parseInt(twEl.value) || 0);
+            }
+            if (vgItem) {
+                const twEl = document.getElementById(`tw-${vgItem.id}`);
+                if (twEl) twVg = (parseInt(twEl.value) || 0);
+            }
+
+            // Compute subsidy splits
+            let subsidizedNv = 0;
+            let nonSubsidizedNv = 0;
+            let subsidizedVg = 0;
+            let nonSubsidizedVg = 0;
+
+            if (nvItem && nvItem.count > 0) {
+                subsidizedNv = Math.min(nvItem.count, SUBSIDY_LIMIT);
+                nonSubsidizedNv = nvItem.count - subsidizedNv;
+            }
+
+            let remainingSubsidy = SUBSIDY_LIMIT - subsidizedNv;
+
+            if (vgItem && vgItem.count > 0) {
+                subsidizedVg = Math.min(vgItem.count, remainingSubsidy);
+                nonSubsidizedVg = vgItem.count - subsidizedVg;
+            }
+
+            // Render NV row only if it has counts or takeaway
+            if (nvItem && (nvItem.count > 0 || twNv > 0)) {
                 hasItems = true;
-                
-                let subsidizedNv = 0;
-                let nonSubsidizedNv = 0;
-                let subsidizedVg = 0;
-                let nonSubsidizedVg = 0;
+                const subText = subsidizedNv > 0 ? `${subsidizedNv} @ ₹${nvItem.sub}` : '';
+                const nonSubText = nonSubsidizedNv > 0 ? `${nonSubsidizedNv} @ ₹${(nvItem.nonSub || nvItem.sub)}` : '';
+                const takeawayText = twNv > 0 ? `${twNv} @ ₹${TAKEAWAY_PRICE}` : '';
+                tableHtml += `
+                    <tr>
+                        <td>${nvItem.day} ${nvItem.meal} ${nvItem.type === 'NV' ? '<span class="non-veg-text">Non-Veg</span>' : (nvItem.type === 'VG' ? '<span class="veg-text">Veg</span>' : '')}${twNv > 0 ? ' <span class="tw-flag">Takeaway</span>' : ''}</td>
+                        <td>${subText}</td>
+                        <td>${nonSubText}</td>
+                        <td>${takeawayText}</td>
+                    </tr>
+                `;
+            }
 
-                if (nvItem && nvItem.count > 0) {
-                    subsidizedNv = Math.min(nvItem.count, SUBSIDY_LIMIT);
-                    nonSubsidizedNv = nvItem.count - subsidizedNv;
-                }
-
-                let remainingSubsidy = SUBSIDY_LIMIT - subsidizedNv;
-
-                if (vgItem && vgItem.count > 0) {
-                    subsidizedVg = Math.min(vgItem.count, remainingSubsidy);
-                    nonSubsidizedVg = vgItem.count - subsidizedVg;
-                }
-
-                if (nvItem && nvItem.count > 0) {
-                    tableHtml += `
-                        <tr>
-                            <td>${nvItem.day} ${nvItem.meal} <span class="non-veg-text">${nvItem.type === 'NV' ? 'Non-Veg' : ''}</span></td>
-                            <td>${subsidizedNv > 0 ? `${subsidizedNv} @ ₹${nvItem.sub}` : ''}</td>
-                            <td>${nonSubsidizedNv > 0 ? `${nonSubsidizedNv} @ ₹${(nvItem.nonSub || nvItem.sub)}` : ''}</td>
-                        </tr>
-                    `;
-                }
-                if (vgItem && vgItem.count > 0) {
-                    tableHtml += `
-                        <tr>
-                            <td>${vgItem.day} ${vgItem.meal} <span class="veg-text">${vgItem.type === 'VG' ? 'Veg' : ''}</span></td>
-                            <td>${subsidizedVg > 0 ? `${subsidizedVg} @ ₹${vgItem.sub}` : ''}</td>
-                            <td>${nonSubsidizedVg > 0 ? `${nonSubsidizedVg} @ ₹${(vgItem.nonSub || vgItem.sub)}` : ''}</td>
-                        </tr>
-                    `;
-                }
+            // Render VG row if it has counts or takeaway
+            if (vgItem && (vgItem.count > 0 || twVg > 0)) {
+                hasItems = true;
+                const subText = subsidizedVg > 0 ? `${subsidizedVg} @ ₹${vgItem.sub}` : '';
+                const nonSubText = nonSubsidizedVg > 0 ? `${nonSubsidizedVg} @ ₹${(vgItem.nonSub || vgItem.sub)}` : '';
+                const takeawayText = twVg > 0 ? `${twVg} @ ₹${TAKEAWAY_PRICE}` : '';
+                tableHtml += `
+                    <tr>
+                        <td>${vgItem.day} ${vgItem.meal} ${vgItem.type === 'VG' ? '<span class="veg-text">Veg</span>' : (vgItem.type === 'NV' ? '<span class="non-veg-text">Non-Veg</span>' : '')}${twVg > 0 ? ' <span class="tw-flag">Takeaway</span>' : ''}</td>
+                        <td>${subText}</td>
+                        <td>${nonSubText}</td>
+                        <td>${takeawayText}</td>
+                    </tr>
+                `;
             }
         }
 

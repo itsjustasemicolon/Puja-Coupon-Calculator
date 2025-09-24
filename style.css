@@ -271,6 +271,49 @@ h1 {
     color: var(--secondary-color);
 }
 
+/* Inline takeaway control in Lunch rows */
+.count-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.takeaway-inline {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    justify-content: center;
+}
+
+.takeaway-inline .tw-label {
+    font-size: 0.8rem;
+    color: var(--muted-text);
+}
+
+.input-stepper.small .stepper-btn {
+    width: 28px;
+    height: 28px;
+    font-size: 1rem;
+    color: var(--muted-text);
+    border-color: var(--border-color);
+}
+
+.input-stepper.small .count-input {
+    height: 28px;
+    width: 44px;
+}
+
+/* Make takeaway steppers less prominent and safer */
+.takeaway-inline .stepper-btn:hover {
+    background-color: var(--header-bg);
+    color: var(--text-color);
+}
+.takeaway-inline .stepper-btn:active {
+    transform: none;
+}
+
 #menu-tooltip {
     position: fixed;
     z-index: 9999;
@@ -373,9 +416,21 @@ h1 {
     background-color: #1a1f35;
 }
 
-.breakdown-table th:nth-child(2), .breakdown-table th:nth-child(3),
-.breakdown-table td:nth-child(2), .breakdown-table td:nth-child(3) {
+.breakdown-table th:nth-child(2), .breakdown-table th:nth-child(3), .breakdown-table th:nth-child(4),
+.breakdown-table td:nth-child(2), .breakdown-table td:nth-child(3), .breakdown-table td:nth-child(4) {
     text-align: right;
+}
+
+.tw-flag {
+    display: inline-block;
+    margin-left: 8px;
+    padding: 2px 6px;
+    font-size: 0.7rem;
+    color: var(--primary-color);
+    background: rgba(106, 17, 203, 0.1);
+    border: 1px solid var(--border-color);
+    border-radius: 999px;
+    vertical-align: middle;
 }
 
 #total-price {
@@ -418,6 +473,11 @@ h1 {
 .non-veg-text {
     color: #dc3545; /* Red */
     font-weight: 600;
+}
+
+.type-na {
+    color: var(--muted-text);
+    font-weight: 500;
 }
 
 .flash {
@@ -575,4 +635,5 @@ h1 {
     .breakdown-table td:nth-of-type(1):before { content: "Meal"; }
     .breakdown-table td:nth-of-type(2):before { content: "Subsidized"; }
     .breakdown-table td:nth-of-type(3):before { content: "Non-Subsidized"; }
+    .breakdown-table td:nth-of-type(4):before { content: "Takeaway"; }
 }
