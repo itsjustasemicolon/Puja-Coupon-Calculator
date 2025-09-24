@@ -298,12 +298,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const SUBSIDY_LIMIT = 4;
         const TAKEAWAY_PRICE = 40;
 
-        // Sum per-lunch takeaway counts and add cost
-        let totalTakeaway = 0;
-        document.querySelectorAll('input[id^="tw-"]').forEach(tw => {
-            totalTakeaway += (parseInt(tw.value) || 0);
-        });
-        grandTotal += totalTakeaway * TAKEAWAY_PRICE;
+        // We'll add takeaway cost per row to that row's price, so no global add here
 
         // Group meals by day and meal name
         const mealGroups = {};
@@ -332,6 +327,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
 
+            // Fetch per-item takeaway counts (exists only for Lunch rows)
+            let twNv = 0;
+            let twVg = 0;
+            if (nvItem) {
+                const twEl = document.getElementById(`tw-${nvItem.id}`);
+                if (twEl) twNv = parseInt(twEl.value) || 0;
+            }
+            if (vgItem) {
+                const twEl = document.getElementById(`tw-${vgItem.id}`);
+                if (twEl) twVg = parseInt(twEl.value) || 0;
+            }
+
             let subsidizedNv = 0;
             let nonSubsidizedNv = 0;
             let subsidizedVg = 0;
@@ -351,7 +358,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Calculate and display price for NV
             if (nvItem) {
-                const nvPrice = (subsidizedNv * nvItem.sub) + (nonSubsidizedNv * (nvItem.nonSub || nvItem.sub));
+                const nvBase = (subsidizedNv * nvItem.sub) + (nonSubsidizedNv * (nvItem.nonSub || nvItem.sub));
+                const nvPrice = nvBase + (twNv * TAKEAWAY_PRICE);
                 document.getElementById(`price-${nvItem.id}`).textContent = nvPrice;
                 grandTotal += nvPrice;
                 totalCoupons += nvItem.count;
@@ -359,7 +367,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Calculate and display price for VG
             if (vgItem) {
-                const vgPrice = (subsidizedVg * vgItem.sub) + (nonSubsidizedVg * (vgItem.nonSub || vgItem.sub));
+                const vgBase = (subsidizedVg * vgItem.sub) + (nonSubsidizedVg * (vgItem.nonSub || vgItem.sub));
+                const vgPrice = vgBase + (twVg * TAKEAWAY_PRICE);
                 document.getElementById(`price-${vgItem.id}`).textContent = vgPrice;
                 grandTotal += vgPrice;
                 totalCoupons += vgItem.count;
@@ -454,9 +463,19 @@ document.addEventListener('DOMContentLoaded', () => {
             // Render NV row only if it has counts or takeaway
             if (nvItem && (nvItem.count > 0 || twNv > 0)) {
                 hasItems = true;
-                const subText = subsidizedNv > 0 ? `${subsidizedNv} @ ₹${nvItem.sub}` : '';
-                const nonSubText = nonSubsidizedNv > 0 ? `${nonSubsidizedNv} @ ₹${(nvItem.nonSub || nvItem.sub)}` : '';
-                const takeawayText = twNv > 0 ? `${twNv} @ ₹${TAKEAWAY_PRICE}` : '';
+                // Split takeaway across subsidized/non-subsidized portions
+                const nvNonSubPrice = (nvItem.nonSub || nvItem.sub);
+                const twNvSub = Math.min(twNv, subsidizedNv);
+                const twNvNonSub = Math.max(0, twNv - twNvSub);
+                const subNormalNv = Math.max(0, subsidizedNv - twNvSub);
+                const nonSubNormalNv = Math.max(0, nonSubsidizedNv - twNvNonSub);
+
+                const subText = subNormalNv > 0 ? `${subNormalNv} @ ₹${nvItem.sub}` : '';
+                const nonSubText = nonSubNormalNv > 0 ? `${nonSubNormalNv} @ ₹${nvNonSubPrice}` : '';
+                const twParts = [];
+                if (twNvSub > 0) twParts.push(`${twNvSub} @ ₹${nvItem.sub} + ₹${TAKEAWAY_PRICE}`);
+                if (twNvNonSub > 0) twParts.push(`${twNvNonSub} @ ₹${nvNonSubPrice} + ₹${TAKEAWAY_PRICE}`);
+                const takeawayText = twParts.join(' | ');
                 tableHtml += `
                     <tr>
                         <td>${nvItem.day} ${nvItem.meal} ${nvItem.type === 'NV' ? '<span class="non-veg-text">Non-Veg</span>' : (nvItem.type === 'VG' ? '<span class="veg-text">Veg</span>' : '')}${twNv > 0 ? ' <span class="tw-flag">Takeaway</span>' : ''}</td>
@@ -470,9 +489,19 @@ document.addEventListener('DOMContentLoaded', () => {
             // Render VG row if it has counts or takeaway
             if (vgItem && (vgItem.count > 0 || twVg > 0)) {
                 hasItems = true;
-                const subText = subsidizedVg > 0 ? `${subsidizedVg} @ ₹${vgItem.sub}` : '';
-                const nonSubText = nonSubsidizedVg > 0 ? `${nonSubsidizedVg} @ ₹${(vgItem.nonSub || vgItem.sub)}` : '';
-                const takeawayText = twVg > 0 ? `${twVg} @ ₹${TAKEAWAY_PRICE}` : '';
+                // Split takeaway across subsidized/non-subsidized portions
+                const vgNonSubPrice = (vgItem.nonSub || vgItem.sub);
+                const twVgSub = Math.min(twVg, subsidizedVg);
+                const twVgNonSub = Math.max(0, twVg - twVgSub);
+                const subNormalVg = Math.max(0, subsidizedVg - twVgSub);
+                const nonSubNormalVg = Math.max(0, nonSubsidizedVg - twVgNonSub);
+
+                const subText = subNormalVg > 0 ? `${subNormalVg} @ ₹${vgItem.sub}` : '';
+                const nonSubText = nonSubNormalVg > 0 ? `${nonSubNormalVg} @ ₹${vgNonSubPrice}` : '';
+                const twParts = [];
+                if (twVgSub > 0) twParts.push(`${twVgSub} @ ₹${vgItem.sub} + ₹${TAKEAWAY_PRICE}`);
+                if (twVgNonSub > 0) twParts.push(`${twVgNonSub} @ ₹${vgNonSubPrice} + ₹${TAKEAWAY_PRICE}`);
+                const takeawayText = twParts.join(' | ');
                 tableHtml += `
                     <tr>
                         <td>${vgItem.day} ${vgItem.meal} ${vgItem.type === 'VG' ? '<span class="veg-text">Veg</span>' : (vgItem.type === 'NV' ? '<span class="non-veg-text">Non-Veg</span>' : '')}${twVg > 0 ? ' <span class="tw-flag">Takeaway</span>' : ''}</td>
