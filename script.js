@@ -6,7 +6,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const clearAllBtn = document.getElementById('clear-all-btn');
     const themeToggleBtn = document.getElementById('theme-toggle');
     const themeHint = document.querySelector('.theme-hint');
-    // Per-row takeaway controls will be created dynamically for Lunch items
+    const collectCouponsBtn = document.getElementById('collect-coupons-btn');
+    const showTotalCollectedBtn = document.getElementById('show-total-collected-btn');
+    const serverTotalsContainer = document.getElementById('server-totals-container');
+    const totalVegServerEl = document.getElementById('total-veg-server');
+    const totalNonVegServerEl = document.getElementById('total-non-veg-server');
+    const grandTotalServerEl = document.getElementById('grand-total-server');
 
     const mealData = [
         { day: 'Panchami', meal: 'Dinner', type: 'VG', sub: 150, nonSub: null, id: 'p_d_vg' },
@@ -289,6 +294,136 @@ document.addEventListener('DOMContentLoaded', () => {
             if (twPlus) twPlus.disabled = true; // main counts are 0 after reset
         });
         calculateTotal();
+    });
+
+    collectCouponsBtn.addEventListener('click', async () => {
+        const couponOrder = {
+            vegCount: 0,
+            nonVegCount: 0,
+            details: [],
+            collectedAt: new Date().toISOString()
+        };
+
+        let totalVeg = 0;
+        let totalNonVeg = 0;
+
+        mealData.forEach(item => {
+            const count = parseInt(document.getElementById(item.id).value) || 0;
+            if (count > 0) {
+                if (item.type === 'VG') {
+                    totalVeg += count;
+                } else if (item.type === 'NV') {
+                    totalNonVeg += count;
+                } else {
+                    // For items without a specific type, let's assume they are veg for counting
+                    totalVeg += count;
+                }
+                couponOrder.details.push({
+                    id: item.id,
+                    day: item.day,
+                    meal: item.meal,
+                    type: item.type,
+                    count: count
+                });
+            }
+        });
+
+        couponOrder.vegCount = totalVeg;
+        couponOrder.nonVegCount = totalNonVeg;
+
+        if (couponOrder.details.length === 0) {
+            alert('No coupons selected to collect.');
+            return;
+        }
+
+        try {
+            const response = await fetch('/api/coupons', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(couponOrder),
+            });
+
+            const result = await response.json();
+            alert(result.message);
+            if (response.ok) {
+                clearAllBtn.click(); // Clear the form after successful collection
+            }
+        } catch (error) {
+            console.error('Error collecting coupons:', error);
+            alert('Failed to collect coupons. See console for details.');
+        }
+    });
+
+    showTotalCollectedBtn.addEventListener('click', async () => {
+        try {
+            const response = await fetch('/api/coupons/total');
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const detailedCounts = await response.json();
+
+            const breakdownContainer = document.getElementById('collected-coupons-breakdown');
+            let tableHtml = `
+                <table class="breakdown-table">
+                    <thead>
+                        <tr>
+                            <th>Meal</th>
+                            <th>Type</th>
+                            <th>Collected Count</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            let hasCollectedItems = false;
+            let grandTotal = 0;
+
+            // Create a lookup map for faster access
+            const mealDataMapById = mealData.reduce((map, item) => {
+                map[item.id] = item;
+                return map;
+            }, {});
+
+            for (const id in detailedCounts) {
+                const count = detailedCounts[id];
+                if (count > 0) {
+                    hasCollectedItems = true;
+                    const mealItem = mealDataMapById[id];
+                    if (mealItem) {
+                        grandTotal += count;
+                        tableHtml += `
+                            <tr>
+                                <td>${mealItem.day} ${mealItem.meal}</td>
+                                <td class="${mealItem.type === 'VG' ? 'veg-text' : mealItem.type === 'NV' ? 'non-veg-text' : ''}">${mealItem.type || '—'}</td>
+                                <td>${count}</td>
+                            </tr>
+                        `;
+                    }
+                }
+            }
+
+            if (hasCollectedItems) {
+                 tableHtml += `
+                    <tr class="grand-total-row">
+                        <td colspan="2">Grand Total</td>
+                        <td>${grandTotal}</td>
+                    </tr>
+                `;
+                tableHtml += `</tbody></table>`;
+                breakdownContainer.innerHTML = tableHtml;
+            } else {
+                breakdownContainer.innerHTML = '<p>No coupons have been collected yet.</p>';
+            }
+
+
+            serverTotalsContainer.style.display = 'block';
+
+        } catch (error) {
+            console.error('Error fetching total collected coupons:', error);
+            alert('Failed to fetch total collected coupons. See console for details.');
+        }
     });
 
     function calculateTotal() {

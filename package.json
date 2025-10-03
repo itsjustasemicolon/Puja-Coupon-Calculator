@@ -1,0 +1,17 @@
+{
+  "name": "puja-coupon-calculator",
+  "version": "1.0.0",
+  "description": "A modern, mobile-friendly web app to calculate total coupon prices for Durga Puja meals, including subsidy logic, Veg/Non-Veg options, and optional takeaway packing.",
+  "main": "script.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.1.0"
+  },
+  "devDependencies": {}
+}

@@ -41,7 +41,17 @@
                 <div>Total Coupons: <span id="total-coupons">0</span></div>
                 <div>Total Price: &#8377;<span id="total-price">0</span></div>
             </div>
+            <div class="backend-actions">
+                <button id="collect-coupons-btn" class="action-btn">Collect Coupons</button>
+                <button id="show-total-collected-btn" class="action-btn">Show Total Collected</button>
+            </div>
             <div id="price-breakdown"></div>
+            <div id="server-totals-container" class="server-totals" style="display:none;">
+                <h3>Total Collected Coupons</h3>
+                <div id="collected-coupons-breakdown">
+                    <!-- Detailed counts will be injected here by script.js -->
+                </div>
+            </div>
         </div>
         <footer class="footer">
             Made with <span class="heart">&hearts;</span> by <a href="https://github.com/itsjustasemicolon"
